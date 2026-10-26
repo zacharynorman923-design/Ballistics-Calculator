@@ -54,10 +54,16 @@ describe('Hornady published trajectories (±0.3")', () => {
   });
 });
 
-describe('Hornady published velocities (±15 fps)', () => {
+// Published velocities at 100/200/300 yd. 7mm Rem Mag: Remington R7MM2 and
+// Federal 7RA from the makers' product pages; Winchester X7MMR1 from a
+// retailer's reproduction of Winchester's table.
+describe('Published velocities (±15 fps)', () => {
   it.each([
     ['preset-65cm-143-eldx', [2557, 2419, 2285]],
     ['preset-3030-160-ftx', [2151, 1917, 1700]],
+    ['preset-7rm-150-corelokt', [2831, 2568, 2321]],
+    ['preset-7rm-150-powerpoint', [2831, 2587, 2356]],
+    ['preset-7rm-150-powershok', [2872, 2647, 2432]],
   ] as const)('%s', (id, expected) => {
     rowsAt(shot(id), [100, 200, 300]).forEach((row, i) => {
       expect(Math.abs(row.velocity - expected[i])).toBeLessThanOrEqual(15);
