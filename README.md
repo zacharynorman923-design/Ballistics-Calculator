@@ -39,13 +39,14 @@ npm run preview   # serve dist/ (use --host to open it from your phone)
 ## Validation status
 
 `src/solver/__tests__/validation.test.ts` checks the solver against Hornady's
-published paths (±0.3").
+published tables (path ±0.3″, velocity ±15 fps). All pass.
 
-- **6.5 CM 143 ELD-X: passes.** +1.92 / 0.00 / −7.89″ against +1.9 / 0 / −7.9.
-- **30-30 160 FTX: fails at 300 yd.** +3.04 / 0.00 / **−12.63″** against
-  +3.0 / 0 / −12.1. The solver is converged and its physics tests pass (see
-  `solver.test.ts`). Its velocities with G1 0.330 land within ~10 fps of the
-  figures recalled for Hornady's chart (2150 / 1916 / 1699; still to be
-  checked against Hornady's page). Reaching −12.1″ would need a G1 BC of
-  ~0.37 or ~2450 fps, so the published path and velocities can't both come
-  from G1 0.330 at 2400 fps. See the commit message for details.
+| Load (200 yd zero, 1.5″ SH) | 100 yd | 200 yd | 300 yd | 300 yd velocity |
+|---|---|---|---|---|
+| 6.5 CM 143 ELD-X, G1 0.625: Hornady | +1.9 | 0 | −7.9 | 2285 |
+| 6.5 CM: solver | +1.92 | 0.00 | −7.89 | 2278 |
+| 30-30 160 FTX, G1 0.330: Hornady | +3.0 | 0 | −12.5 | 1700 |
+| 30-30 FTX: solver | +3.04 | 0.00 | −12.63 | 1689 |
+
+Hornady's own page lists −12.5″ at 300 yd for the 30-30 FTX. Some retailer
+listings show −12.1″, which no G1 0.330 / 2400 fps solution reproduces.
