@@ -3,7 +3,7 @@
 import { PRESETS, type LoadProfile } from '../data/presets';
 import { STANDARD_ENV, type AngleUnit, type Environment, type ShotInput } from '../solver';
 
-export type TabId = 'table' | 'zeros' | 'optimal' | 'card' | 'chart' | 'profiles';
+export type TabId = 'table' | 'zeros' | 'optimal' | 'card' | 'chart' | 'profiles' | 'glossary';
 
 export interface AppState {
   profile: LoadProfile;
