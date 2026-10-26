@@ -18,3 +18,5 @@ export {
   offsetToMil,
   offsetToMoa,
 } from './units';
+export { compareLoads } from './loadSwap';
+export type { LoadSwapOptions, LoadSwapResult, LoadSwapRow } from './loadSwap';

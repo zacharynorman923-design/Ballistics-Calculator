@@ -16,6 +16,9 @@ export interface AppState {
   windowNear: number;
   windowFar: number;
   targetRadius: number;
+  zerosMode: 'distances' | 'loads';
+  /** Profile to compare against in the "switch loads" view. */
+  swapProfileId: string | null;
 }
 
 export const DEFAULT_STATE: AppState = {
@@ -29,6 +32,8 @@ export const DEFAULT_STATE: AppState = {
   windowNear: 50,
   windowFar: 250,
   targetRadius: 4,
+  zerosMode: 'distances',
+  swapProfileId: null,
 };
 
 export function toShot(state: AppState, zeroRange = state.profile.zeroRange): ShotInput {

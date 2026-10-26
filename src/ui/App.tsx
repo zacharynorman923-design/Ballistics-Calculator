@@ -3,6 +3,8 @@ import { useTrajectory } from '../hooks/useSolver';
 import { loadState, saveState } from '../storage/profiles';
 import { HoldoverCard } from './HoldoverCard';
 import { InputsPanel } from './InputsPanel';
+import { LoadSwap } from './LoadSwap';
+import { Segmented } from './fields';
 import { OptimalZero } from './OptimalZero';
 import { PathChart } from './PathChart';
 import { ProfileManager } from './ProfileManager';
@@ -54,7 +56,23 @@ export function App() {
         {state.tab === 'table' && trajectory && (
           <TrajectoryTable trajectory={trajectory} clickUnit={state.clickUnit} showWind={state.env.windSpeedMph > 0} />
         )}
-        {state.tab === 'zeros' && <ZeroComparison state={state} update={update} />}
+        {state.tab === 'zeros' && (
+          <>
+            <Segmented
+              value={state.zerosMode}
+              options={[
+                { value: 'distances', label: 'Zero distances' },
+                { value: 'loads', label: 'Switch loads' },
+              ]}
+              onChange={(v) => update({ zerosMode: v })}
+            />
+            {state.zerosMode === 'distances' ? (
+              <ZeroComparison state={state} update={update} />
+            ) : (
+              <LoadSwap state={state} update={update} />
+            )}
+          </>
+        )}
         {state.tab === 'optimal' && <OptimalZero state={state} update={update} />}
         {state.tab === 'card' && <HoldoverCard state={state} />}
         {state.tab === 'chart' && trajectory && <PathChart state={state} trajectory={trajectory} />}

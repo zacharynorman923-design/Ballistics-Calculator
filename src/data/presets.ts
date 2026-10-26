@@ -86,7 +86,31 @@ export const PRESETS: readonly LoadProfile[] = [
     bcFromBox: true,
     notes: 'Retailer-listed G1 0.202. AR-15s usually have about 2.6″ sight height.',
   },
+  {
+    id: 'preset-223-55-corelokt',
+    name: '.223 55 Core-Lokt PSP',
+    cartridge: '.223 Remington',
+    bullet: 'Remington 55 gr Core-Lokt Pointed Soft Point (R223R1)',
+    muzzleVelocity: 3240,
+    bc: 0.197,
+    dragModel: 'G1',
+    bulletWeight: 55,
+    sightHeight: 1.5,
+    zeroRange: 200,
+    bcFromBox: true,
+    notes: 'Retailer-listed G1 0.197. AR-15s usually have about 2.6″ sight height.',
+  },
 ];
+
+/** Normalized cartridge name for same-caliber matching ("30-30 Win" ≈ "30-30 Winchester"). */
+export function cartridgeKey(cartridge: string): string {
+  return cartridge
+    .toLowerCase()
+    .replace(/remington/g, 'rem')
+    .replace(/winchester/g, 'win')
+    .replace(/springfield/g, 'sprg')
+    .replace(/[^a-z0-9]/g, '');
+}
 
 export function presetById(id: string): LoadProfile {
   const p = PRESETS.find((x) => x.id === id);

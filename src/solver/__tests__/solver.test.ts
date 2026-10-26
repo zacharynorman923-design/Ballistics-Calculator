@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import {
   atmosphere,
   boreAngleForZero,
+  compareLoads,
   correctionClicks,
   energyFtLbs,
   findOptimalZero,
@@ -150,5 +151,33 @@ describe('optimal zero / MPBR', () => {
     }
     // 1.25" radius with a 1.5" sight height: the bullet starts outside.
     expect(maxPointBlankRange(ELDX, 1.25).start).toBeGreaterThan(0);
+  });
+});
+
+describe('load swap', () => {
+  const opts = { maxRange: 400, rangeStep: 50, clicks: MOA };
+  const slower: ShotInput = { ...ELDX, muzzleVelocity: 2550, bc: 0.5, bulletWeight: 140, sightHeight: 3, zeroRange: 100 };
+
+  it('is a no-op when both loads are the same', () => {
+    const r = compareLoads(ELDX, ELDX, opts);
+    r.rows.forEach((row) => expect(row.difference).toBeCloseTo(0, 9));
+    expect(r.offsetAtZero).toBeCloseTo(0, 3);
+    expect(r.farZeroB).toBeCloseTo(200, 0);
+  });
+
+  it('a slower, lower-BC load hits progressively lower and uses the zeroed rifle’s sight height', () => {
+    const r = compareLoads(ELDX, slower, opts);
+    expect(r.rows[0].pathB).toBeCloseTo(-ELDX.sightHeight, 6);
+    for (let i = 2; i < r.rows.length; i++) expect(r.rows[i].difference).toBeLessThan(r.rows[i - 1].difference);
+    expect(r.offsetAtZero).toBeLessThan(0);
+    expect(r.farZeroB!).toBeLessThan(200);
+    expect(r.rezeroClicks).toBeGreaterThan(0);
+  });
+
+  it('re-zero clicks equal the bore-angle change needed to zero load B', () => {
+    const r = compareLoads(ELDX, slower, opts);
+    const own = boreAngleForZero({ ...slower, sightHeight: ELDX.sightHeight, zeroRange: ELDX.zeroRange });
+    const moa = ((own - r.boreAngle) * 180 * 60) / Math.PI;
+    expect(r.rezeroClicks * 0.25).toBeCloseTo(moa, 1);
   });
 });
