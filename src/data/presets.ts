@@ -72,6 +72,20 @@ export const PRESETS: readonly LoadProfile[] = [
     bcFromBox: true,
     notes: 'Winchester published G1 0.294.',
   },
+  {
+    id: 'preset-223-55-umc-fmj',
+    name: '.223 55 UMC FMJ',
+    cartridge: '.223 Remington',
+    bullet: 'Remington UMC 55 gr Full Metal Jacket (L223R3)',
+    muzzleVelocity: 3240,
+    bc: 0.202,
+    dragModel: 'G1',
+    bulletWeight: 55,
+    sightHeight: 1.5,
+    zeroRange: 200,
+    bcFromBox: true,
+    notes: 'Retailer-listed G1 0.202. AR-15s usually have about 2.6″ sight height.',
+  },
 ];
 
 export function presetById(id: string): LoadProfile {
