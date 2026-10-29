@@ -5,6 +5,7 @@ import {
   atmosphere,
   boreAngleForZero,
   compareLoads,
+  zeroFromImpact,
   correctionClicks,
   energyFtLbs,
   findOptimalZero,
@@ -179,5 +180,30 @@ describe('load swap', () => {
     const own = boreAngleForZero({ ...slower, sightHeight: ELDX.sightHeight, zeroRange: ELDX.zeroRange });
     const moa = ((own - r.boreAngle) * 180 * 60) / Math.PI;
     expect(r.rezeroClicks * 0.25).toBeCloseTo(moa, 1);
+  });
+});
+
+describe('zero from impact', () => {
+  it('recovers a known zero from the path at 100 yd', () => {
+    for (const zero of [150, 200, 250]) {
+      const at100 = pathAt({ ...ELDX, zeroRange: zero }, 100).path;
+      const r = zeroFromImpact(ELDX, { rangeYd: 100, verticalIn: at100, horizontalIn: 0 }, MOA, zero);
+      expect(r.farZero!).toBeCloseTo(zero, 0);
+      expect(Math.abs(r.elevationClicks)).toBeLessThan(0.05);
+    }
+  });
+
+  it('reports no zero when the group is low and the bullet never rises to the line of sight', () => {
+    const r = zeroFromImpact(ELDX, { rangeYd: 100, verticalIn: -1, horizontalIn: 0 }, MOA, 200);
+    expect(r.farZero).toBeNull();
+    expect(r.nearZero).toBeNull();
+    expect(r.elevationClicks).toBeGreaterThan(0);
+  });
+
+  it('clicks move toward the target: high group → dial down; windage centers the group', () => {
+    const r = zeroFromImpact(ELDX, { rangeYd: 100, verticalIn: 3, horizontalIn: 1.047 }, MOA, 200);
+    expect(r.farZero!).toBeGreaterThan(200);
+    expect(r.elevationClicks).toBeLessThan(0);
+    expect(r.windageClicks).toBeCloseTo(-4, 1); // 1 MOA right → 4 clicks left
   });
 });

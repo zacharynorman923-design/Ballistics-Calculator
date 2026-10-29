@@ -168,6 +168,16 @@ export const GLOSSARY: GlossarySection[] = [
           'The largest distance above or below the crosshair anywhere in the shot window with a center hold.',
       },
       {
+        term: 'Find zero',
+        definition:
+          'Works out where your rifle is actually zeroed from how high or low a group lands at a known distance, and how many clicks move it to the zero you want.',
+      },
+      {
+        term: 'Group center',
+        definition:
+          'The middle of a cluster of 3–5 shots. Measure from your aim point to the group center, not to one shot; single shots wander.',
+      },
+      {
         term: 'Switch loads',
         definition:
           'Shows where a different load hits if you keep the scope set from zeroing another load. Useful if you sight in with cheap ammo and hunt with something else.',

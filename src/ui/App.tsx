@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTrajectory } from '../hooks/useSolver';
 import { loadState, saveState } from '../storage/profiles';
+import { FindZero } from './FindZero';
 import { Glossary, GlossarySearch } from './Glossary';
 import { HoldoverCard } from './HoldoverCard';
 import { InputsPanel } from './InputsPanel';
@@ -78,16 +79,15 @@ export function App() {
             <Segmented
               value={state.zerosMode}
               options={[
-                { value: 'distances', label: 'Zero distances' },
+                { value: 'distances', label: 'Distances' },
                 { value: 'loads', label: 'Switch loads' },
+                { value: 'find', label: 'Find zero' },
               ]}
               onChange={(v) => update({ zerosMode: v })}
             />
-            {state.zerosMode === 'distances' ? (
-              <ZeroComparison state={state} update={update} />
-            ) : (
-              <LoadSwap state={state} update={update} />
-            )}
+            {state.zerosMode === 'distances' && <ZeroComparison state={state} update={update} />}
+            {state.zerosMode === 'loads' && <LoadSwap state={state} update={update} />}
+            {state.zerosMode === 'find' && <FindZero state={state} update={update} />}
           </>
         )}
         {state.tab === 'optimal' && <OptimalZero state={state} update={update} />}

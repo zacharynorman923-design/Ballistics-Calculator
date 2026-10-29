@@ -20,3 +20,6 @@ export {
 } from './units';
 export { compareLoads } from './loadSwap';
 export type { LoadSwapOptions, LoadSwapResult, LoadSwapRow } from './loadSwap';
+export { boreAngleForPath } from './zero';
+export { zeroFromImpact } from './zeroFromImpact';
+export type { ImpactInput, ZeroFromImpactResult } from './zeroFromImpact';

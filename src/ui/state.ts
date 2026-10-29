@@ -16,7 +16,7 @@ export interface AppState {
   windowNear: number;
   windowFar: number;
   targetRadius: number;
-  zerosMode: 'distances' | 'loads';
+  zerosMode: 'distances' | 'loads' | 'find';
   /** Profile to compare against in the "switch loads" view. */
   swapProfileId: string | null;
 }
