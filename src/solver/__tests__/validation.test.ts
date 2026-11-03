@@ -57,7 +57,8 @@ describe('Hornady published trajectories (±0.3")', () => {
 // Published velocities at 100/200/300 yd. 7mm Rem Mag: Remington R7MM2 and
 // Federal 7RA from the makers' product pages; Winchester X7MMR1 from a
 // retailer's reproduction of Winchester's table. 270 Win: Federal 270A from
-// a retailer's reproduction of Federal's table.
+// a retailer's reproduction of Federal's table. 300 BLK: Hornady 190 gr
+// Sub-X (subsonic) from a retailer's reproduction of Hornady's table.
 describe('Published velocities (±15 fps)', () => {
   it.each([
     ['preset-65cm-143-eldx', [2557, 2419, 2285]],
@@ -66,6 +67,7 @@ describe('Published velocities (±15 fps)', () => {
     ['preset-7rm-150-powerpoint', [2831, 2587, 2356]],
     ['preset-7rm-150-powershok', [2872, 2647, 2432]],
     ['preset-270-130-powershok', [2803, 2560, 2329]],
+    ['preset-300blk-190-subx', [998, 956, 919]],
   ] as const)('%s', (id, expected) => {
     rowsAt(shot(id), [100, 200, 300]).forEach((row, i) => {
       expect(Math.abs(row.velocity - expected[i])).toBeLessThanOrEqual(15);
