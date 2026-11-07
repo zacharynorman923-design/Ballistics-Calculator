@@ -282,6 +282,20 @@ export const PRESETS: readonly LoadProfile[] = [
     bcFromBox: true,
     notes: 'Remington published BC 0.680. Sight height set for a typical AR.',
   },
+  {
+    id: 'preset-86blk-300-hpbt-sub',
+    name: '8.6 BLK 300 HPBT (sub)',
+    cartridge: '8.6 Blackout',
+    bullet: 'HOP Munitions 300 gr HPBT, subsonic',
+    muzzleVelocity: 1050,
+    bc: 0.75,
+    dragModel: 'G1',
+    bulletWeight: 300,
+    sightHeight: 2.6,
+    zeroRange: 100,
+    bcFromBox: true,
+    notes: 'HOP Munitions published G1 0.750. Sight height set for a typical AR.',
+  },
 ];
 
 /** Normalized cartridge name for same-caliber matching ("30-30 Win" ≈ "30-30 Winchester"). */
