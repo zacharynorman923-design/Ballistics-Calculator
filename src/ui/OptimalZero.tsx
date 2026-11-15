@@ -11,7 +11,7 @@ interface Props {
 
 const TARGETS = [
   { value: 4, label: 'Vitals 4″' },
-  { value: 1.5, label: 'Varmint 1.5″' },
+  { value: 2, label: 'Varmint 2″' },
   { value: 1.25, label: 'Neck/spine 1.25″' },
 ] as const;
 
