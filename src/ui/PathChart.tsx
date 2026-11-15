@@ -41,7 +41,7 @@ export function PathChart({ state, trajectory }: Props) {
   const { profile, env, maxRange, targetRadius } = state;
   const pts = useMemo(
     () => pathProfile(toShot(state), trajectory.boreAngle, maxRange, Math.max(1, Math.round(maxRange / 250)), { wind: true }),
-    [profile, env, maxRange, trajectory],
+    [profile, env, maxRange, trajectory, state.barrels],
   );
 
   const yMin = Math.min(-targetRadius, ...pts.map((p) => p.path));

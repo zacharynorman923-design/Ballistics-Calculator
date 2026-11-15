@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import type { LoadProfile } from '../data/presets';
+import { barrelSettings, barrelVelocityDelta, effectiveVelocity } from '../data/barrel';
+import { cartridgeKey, type LoadProfile } from '../data/presets';
 import type { Environment } from '../solver';
 import { loadFavorites } from '../storage/profiles';
 import { NumberField, Segmented } from './fields';
-import type { AppState } from './state';
+import { int } from './format';
+import { rifleBarrel, type AppState } from './state';
 
 interface Props {
   state: AppState;
@@ -16,6 +18,20 @@ export function InputsPanel({ state, update }: Props) {
   const env = state.env;
   const setLoad = (patch: Partial<LoadProfile>) => update({ profile: { ...p, ...patch } });
   const setEnv = (patch: Partial<Environment>) => update({ env: { ...env, ...patch } });
+  const rifle = rifleBarrel(state);
+  const barrel = barrelSettings(p, rifle);
+  const delta = barrelVelocityDelta(p, rifle);
+  const velocity = effectiveVelocity(p, rifle);
+  const setRifle = (patch: Partial<typeof barrel>) =>
+    update({
+      barrels: {
+        ...state.barrels,
+        [cartridgeKey(p.cartridge)]: {
+          enabled: patch.enabled ?? barrel.enabled,
+          barrelIn: patch.barrelIn ?? barrel.barrelIn,
+        },
+      },
+    });
 
   return (
     <section className="card inputs">
@@ -25,7 +41,7 @@ export function InputsPanel({ state, update }: Props) {
           <strong>{p.name}</strong>
           <span className="muted">
             {' '}
-            · {p.muzzleVelocity} fps · {p.dragModel} {p.bc} · {p.zeroRange} yd zero
+            · {int(velocity)} fps{delta !== 0 ? ` (${barrel.barrelIn}″)` : ''} · {p.dragModel} {p.bc} · {p.zeroRange} yd zero
           </span>
         </span>
         <span className="chev" aria-hidden>{open ? '▴' : '▾'}</span>
@@ -36,7 +52,7 @@ export function InputsPanel({ state, update }: Props) {
           <fieldset>
             <legend>Load</legend>
             <div className="grid">
-              <NumberField label="Muzzle velocity" unit="fps" value={p.muzzleVelocity} onChange={(v) => setLoad({ muzzleVelocity: v })} />
+              <NumberField label={barrel.enabled ? 'Box velocity' : 'Muzzle velocity'} unit="fps" value={p.muzzleVelocity} onChange={(v) => setLoad({ muzzleVelocity: v })} />
               <NumberField
                 label="BC"
                 value={p.bc}
@@ -48,6 +64,34 @@ export function InputsPanel({ state, update }: Props) {
               <NumberField label="Bullet weight" unit="gr" value={p.bulletWeight} onChange={(v) => setLoad({ bulletWeight: v })} />
             </div>
             {p.bcFromBox && <p className="hint"><span className="field-marker">●</span> BC from the box — confirm and edit. {p.notes}</p>}
+          </fieldset>
+
+          <fieldset>
+            <legend>Barrel length</legend>
+            <label className="field check">
+              <input
+                type="checkbox"
+                checked={barrel.enabled}
+                onChange={(e) => setRifle({ enabled: e.target.checked })}
+              />
+              <span>Adjust box velocity for my {p.cartridge} barrel length</span>
+            </label>
+            {barrel.enabled && (
+              <>
+                <div className="grid">
+                  <NumberField label="My barrel" unit="in" step={0.5} value={barrel.barrelIn} onChange={(v) => setRifle({ barrelIn: v })} />
+                  <NumberField label="Box test barrel" unit="in" step={0.5} value={barrel.testBarrelIn} onChange={(v) => setLoad({ testBarrelIn: v })} />
+                  <NumberField label="Change per inch" unit="fps" value={barrel.fpsPerInch} onChange={(v) => setLoad({ fpsPerInch: v })} />
+                </div>
+                <p className="hint">
+                  Using <strong>{int(velocity)} fps</strong>
+                  {delta !== 0 && ` (${delta > 0 ? '+' : '−'}${int(Math.abs(delta))} fps from the box ${int(p.muzzleVelocity)})`}. Rule of thumb:
+                  about 25 fps per inch, 30 for magnums, 20 for 30-30, 5 for subsonic. A chronograph reading beats any rule:
+                  if you have one, untick this and enter it as the muzzle velocity. Your barrel length applies to every{' '}
+                  {p.cartridge} load; test barrel and per-inch change belong to this load.
+                </p>
+              </>
+            )}
           </fieldset>
 
           <fieldset>

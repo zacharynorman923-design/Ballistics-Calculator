@@ -1,6 +1,7 @@
 // App state shape and its mapping onto solver input.
 
-import { PRESETS, type LoadProfile } from '../data/presets';
+import { barrelSettings, effectiveVelocity, type RifleBarrel } from '../data/barrel';
+import { cartridgeKey, PRESETS, type LoadProfile } from '../data/presets';
 import { STANDARD_ENV, type AngleUnit, type Environment, type ShotInput } from '../solver';
 
 export type TabId = 'table' | 'zeros' | 'optimal' | 'card' | 'chart' | 'profiles' | 'glossary';
@@ -19,6 +20,8 @@ export interface AppState {
   zerosMode: 'distances' | 'loads' | 'find';
   /** Profile to compare against in the "switch loads" view. */
   swapProfileId: string | null;
+  /** Rifle barrel length per cartridge (cartridgeKey → barrel). */
+  barrels: Record<string, RifleBarrel>;
 }
 
 export const DEFAULT_STATE: AppState = {
@@ -34,12 +37,18 @@ export const DEFAULT_STATE: AppState = {
   targetRadius: 4,
   zerosMode: 'distances',
   swapProfileId: null,
+  barrels: {},
 };
+
+/** The rifle barrel for a profile's cartridge. */
+export function rifleBarrel(state: AppState, profile: LoadProfile = state.profile): RifleBarrel | undefined {
+  return state.barrels[cartridgeKey(profile.cartridge)];
+}
 
 export function toShot(state: AppState, zeroRange = state.profile.zeroRange): ShotInput {
   const p = state.profile;
   return {
-    muzzleVelocity: p.muzzleVelocity,
+    muzzleVelocity: effectiveVelocity(p, rifleBarrel(state)),
     bc: p.bc,
     dragModel: p.dragModel,
     bulletWeight: p.bulletWeight,
@@ -53,6 +62,13 @@ export function toShot(state: AppState, zeroRange = state.profile.zeroRange): Sh
 export function validate(state: AppState): string | null {
   const p = state.profile;
   if (!(p.muzzleVelocity > 100)) return 'Muzzle velocity must be over 100 fps.';
+  const b = barrelSettings(p, rifleBarrel(state));
+  if (b.enabled) {
+    if (!(b.barrelIn >= 4 && b.barrelIn <= 40)) return 'Barrel length must be 4–40 in.';
+    if (!(b.testBarrelIn >= 4 && b.testBarrelIn <= 40)) return 'Test barrel length must be 4–40 in.';
+    if (!(b.fpsPerInch >= 0 && b.fpsPerInch <= 100)) return 'Velocity per inch must be 0–100 fps.';
+    if (!(effectiveVelocity(p, rifleBarrel(state)) > 100)) return 'Barrel adjustment leaves velocity under 100 fps.';
+  }
   if (!(p.bc > 0.01 && p.bc < 2)) return 'BC must be between 0.01 and 2.';
   if (!(p.bulletWeight > 0)) return 'Bullet weight must be positive.';
   if (!(p.sightHeight >= 0 && p.sightHeight < 10)) return 'Sight height must be 0–10 in.';

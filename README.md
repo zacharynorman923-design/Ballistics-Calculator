@@ -35,6 +35,9 @@ npm run preview   # serve dist/ (use --host to open it from your phone)
   altitude converts it to station pressure. Tick "Station pressure" for a Kestrel /
   absolute reading.
 - The rifle is zeroed in still air under the current conditions.
+- **Barrel length** (optional): box velocity is adjusted by `(your barrel − test barrel) × fps per inch`.
+  Your barrel length is remembered per cartridge; test barrel and fps per inch belong to each load
+  (`src/data/barrel.ts`).
 
 ## Validation status
 

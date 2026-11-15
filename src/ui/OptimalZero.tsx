@@ -31,7 +31,7 @@ export function OptimalZero({ state, update }: Props) {
     } catch (e) {
       return { error: e instanceof Error ? e.message : String(e) } as const;
     }
-  }, [profile, env, windowNear, windowFar, targetRadius]);
+  }, [profile, env, windowNear, windowFar, targetRadius, state.barrels]);
 
   const isPresetRadius = TARGETS.some((t) => t.value === targetRadius);
 

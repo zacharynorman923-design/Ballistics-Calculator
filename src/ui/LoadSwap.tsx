@@ -3,7 +3,7 @@ import { cartridgeKey, type LoadProfile } from '../data/presets';
 import { compareLoads, DEFAULT_CLICKS } from '../solver';
 import { listProfiles } from '../storage/profiles';
 import { elevClicks, fixed, signed } from './format';
-import { toShot, validate, type AppState } from './state';
+import { rifleBarrel, toShot, validate, type AppState } from './state';
 
 interface Props {
   state: AppState;
@@ -36,7 +36,11 @@ export function LoadSwap({ state, update }: Props) {
     const invalid = validate(state) ?? validate({ ...state, profile: other });
     if (invalid) return { error: invalid } as const;
     try {
-      return compareLoads(toShot(state), toShot({ ...state, profile: other }), {
+      // Same rifle: the other load is fired from this rifle's barrel, even
+      // when comparing across calibers.
+      const rifle = rifleBarrel(state);
+      const otherState = { ...state, profile: other, barrels: rifle ? { [cartridgeKey(other.cartridge)]: rifle } : {} };
+      return compareLoads(toShot(state), toShot(otherState), {
         maxRange,
         rangeStep,
         clicks: DEFAULT_CLICKS[clickUnit],
@@ -44,7 +48,7 @@ export function LoadSwap({ state, update }: Props) {
     } catch (e) {
       return { error: e instanceof Error ? e.message : String(e) } as const;
     }
-  }, [zeroed, other, env, maxRange, rangeStep, clickUnit]);
+  }, [zeroed, other, env, maxRange, rangeStep, clickUnit, state.barrels]);
 
   const clickName = clickUnit === 'MOA' ? '¼ MOA' : '0.1 MIL';
 

@@ -34,7 +34,7 @@ export function FindZero({ state, update }: Props) {
     } catch (e) {
       return { error: e instanceof Error ? e.message : String(e) } as const;
     }
-  }, [profile, env, clickUnit, range, height, high, side, right, target]);
+  }, [profile, env, clickUnit, range, height, high, side, right, target, state.barrels]);
 
   const clickName = clickUnit === 'MOA' ? '¼ MOA' : '0.1 MIL';
 

@@ -24,7 +24,7 @@ export function ZeroComparison({ state, update }: Props) {
         }
       }),
     // zeros is derived from customZero
-    [profile, env, maxRange, rangeStep, clickUnit, state.customZero],
+    [profile, env, maxRange, rangeStep, clickUnit, state.customZero, state.barrels],
   );
   const ranges = columns.find((c) => c)?.map((r) => r.range) ?? [];
 

@@ -50,6 +50,12 @@ export const GLOSSARY: GlossarySection[] = [
           'Speed as the bullet leaves the barrel. Box numbers come from a test barrel (often 24″); shorter barrels are usually slower, roughly 25–50 fps per inch.',
       },
       {
+        term: 'Barrel length adjustment',
+        aka: 'test barrel',
+        definition:
+          'Box velocities are measured in a test barrel, usually 24″ (16″ for 300 Blackout). A shorter barrel is slower, roughly 25 fps per inch for most cartridges, 30 for magnums, 20 for 30-30 and only about 5 for subsonic loads. Tick “Adjust box velocity for my barrel length” and the app uses the adjusted speed everywhere.',
+      },
+      {
         term: 'Energy',
         aka: 'ft-lb, ft-lbs',
         definition:

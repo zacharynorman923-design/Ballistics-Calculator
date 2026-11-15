@@ -23,5 +23,5 @@ export function useTrajectory(state: AppState, zeroRange = state.profile.zeroRan
     } catch (e) {
       return { trajectory: null, error: e instanceof Error ? e.message : String(e) };
     }
-  }, [profile, env, maxRange, rangeStep, clickUnit, zeroRange]);
+  }, [profile, env, maxRange, rangeStep, clickUnit, zeroRange, state.barrels]);
 }

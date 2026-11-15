@@ -17,6 +17,10 @@ export interface LoadProfile {
   /** True when the BC should be confirmed from the ammo box. */
   bcFromBox?: boolean;
   notes?: string;
+  /** Barrel length the box velocity was measured in, inches (default 24). */
+  testBarrelIn?: number;
+  /** Velocity change per inch of barrel, fps (default by cartridge). */
+  fpsPerInch?: number;
 }
 
 export const PRESETS: readonly LoadProfile[] = [
@@ -237,6 +241,7 @@ export const PRESETS: readonly LoadProfile[] = [
     bulletWeight: 110,
     sightHeight: 2.6,
     zeroRange: 100,
+    testBarrelIn: 16,
     bcFromBox: true,
     notes: 'Retailer-listed G1 0.289, 16″ barrel. Sight height set for a typical AR.',
   },
@@ -251,6 +256,7 @@ export const PRESETS: readonly LoadProfile[] = [
     bulletWeight: 135,
     sightHeight: 2.6,
     zeroRange: 100,
+    testBarrelIn: 16,
     bcFromBox: true,
     notes: 'Retailer-listed G1 0.274, 16″ barrel. Sight height set for a typical AR.',
   },
@@ -265,6 +271,7 @@ export const PRESETS: readonly LoadProfile[] = [
     bulletWeight: 190,
     sightHeight: 2.6,
     zeroRange: 100,
+    testBarrelIn: 16,
     bcFromBox: true,
     notes: 'Hornady G1 0.437. Sight height set for a typical AR.',
   },
@@ -279,6 +286,7 @@ export const PRESETS: readonly LoadProfile[] = [
     bulletWeight: 220,
     sightHeight: 2.6,
     zeroRange: 100,
+    testBarrelIn: 16,
     bcFromBox: true,
     notes: 'Remington published BC 0.680. Sight height set for a typical AR.',
   },
@@ -293,6 +301,7 @@ export const PRESETS: readonly LoadProfile[] = [
     bulletWeight: 300,
     sightHeight: 2.6,
     zeroRange: 100,
+    testBarrelIn: 16,
     bcFromBox: true,
     notes: 'HOP Munitions published G1 0.750. Sight height set for a typical AR.',
   },

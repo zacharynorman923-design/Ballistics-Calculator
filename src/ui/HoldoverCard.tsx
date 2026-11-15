@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { effectiveVelocity } from '../data/barrel';
 import { useTrajectory } from '../hooks/useSolver';
 import { NumberField, Segmented } from './fields';
-import { elevClicks, fixed, windClicks } from './format';
-import type { AppState } from './state';
+import { elevClicks, fixed, int, windClicks } from './format';
+import { rifleBarrel, type AppState } from './state';
 
 interface Props {
   state: AppState;
@@ -50,7 +51,7 @@ export function HoldoverCard({ state }: Props) {
           <header>
             <h2>{p.name}</h2>
             <p>
-              {p.muzzleVelocity} fps · {p.dragModel} {p.bc} · {zero} yd zero · {clickName} clicks
+              {int(effectiveVelocity(p, rifleBarrel(state)))} fps · {p.dragModel} {p.bc} · {zero} yd zero · {clickName} clicks
             </p>
             <p>
               {env.temperatureF}°F · {env.altitudeFt} ft · {env.pressureInHg} inHg
