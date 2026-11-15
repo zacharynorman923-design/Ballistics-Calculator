@@ -144,7 +144,7 @@ export const GLOSSARY: GlossarySection[] = [
       {
         term: 'Target radius',
         definition:
-          'How far from your aim point a hit is still good. Deer vitals are about an 8″ circle, so a 4″ radius; a neck or spine shot is about 1.25″.',
+          'How far from your aim point a hit is still good. Deer vitals are about an 8″ circle, so a 4″ radius; varmints like coyotes and groundhogs about a 3″ circle (1.5″ radius); a neck or spine shot is about 1.25″. Smaller animals such as prairie dogs need less, so type your own.',
       },
       {
         term: 'Max point-blank range',
