@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { barrelSettings, barrelVelocityDelta, effectiveVelocity } from '../data/barrel';
+import { barrelSettings, barrelVelocityDelta, effectiveVelocity, typicalBarrelIn } from '../data/barrel';
 import { cartridgeKey, type LoadProfile } from '../data/presets';
 import type { Environment } from '../solver';
 import { loadFavorites } from '../storage/profiles';
@@ -83,6 +83,11 @@ export function InputsPanel({ state, update }: Props) {
                   <NumberField label="Box test barrel" unit="in" step={0.5} value={barrel.testBarrelIn} onChange={(v) => setLoad({ testBarrelIn: v })} />
                   <NumberField label="Change per inch" unit="fps" value={barrel.fpsPerInch} onChange={(v) => setLoad({ fpsPerInch: v })} />
                 </div>
+                {barrel.barrelIn === typicalBarrelIn(p.cartridge) && (
+                  <p className="hint">
+                    “My barrel” starts at {typicalBarrelIn(p.cartridge)}″, a common length for {p.cartridge}. Change it to yours.
+                  </p>
+                )}
                 <p className="hint">
                   Using <strong>{int(velocity)} fps</strong>
                   {delta !== 0 && ` (${delta > 0 ? '+' : '−'}${int(Math.abs(delta))} fps from the box ${int(p.muzzleVelocity)})`}. Rule of thumb:

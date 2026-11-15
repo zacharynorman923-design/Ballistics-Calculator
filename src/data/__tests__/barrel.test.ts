@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { barrelSettings, defaultFpsPerInch, effectiveVelocity } from '../barrel';
+import { barrelSettings, defaultFpsPerInch, effectiveVelocity, typicalBarrelIn } from '../barrel';
 import { presetById } from '../presets';
 
 describe('barrel length adjustment', () => {
@@ -23,5 +23,16 @@ describe('barrel length adjustment', () => {
     expect(defaultFpsPerInch('7mm Rem Mag', 3110)).toBe(30);
     expect(defaultFpsPerInch('30-30 Win', 2400)).toBe(20);
     expect(defaultFpsPerInch('300 Blackout', 1050)).toBe(5);
+  });
+
+  it('starts "My barrel" at a typical length for the cartridge', () => {
+    expect(barrelSettings(eldx).barrelIn).toBe(22);
+    expect(barrelSettings(presetById('preset-3030-160-ftx')).barrelIn).toBe(20);
+    expect(barrelSettings(presetById('preset-223-55-umc-fmj')).barrelIn).toBe(16);
+    expect(typicalBarrelIn('6.5 creedmoor')).toBe(22);
+    expect(typicalBarrelIn('Wildcat 9000')).toBeNull();
+    expect(barrelSettings({ ...eldx, cartridge: 'Wildcat 9000' }).barrelIn).toBe(24);
+    // Enabling with the typical length: 6.5 CM from 22" is 50 fps slower.
+    expect(effectiveVelocity(eldx, { enabled: true, barrelIn: barrelSettings(eldx).barrelIn })).toBe(2650);
   });
 });
