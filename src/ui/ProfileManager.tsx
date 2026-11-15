@@ -1,6 +1,17 @@
 import { useState } from 'react';
 import type { LoadProfile } from '../data/presets';
-import { deleteProfile, isEditedPreset, isPreset, listProfiles, newProfileId, saveProfile } from '../storage/profiles';
+import {
+  deleteProfile,
+  isEditedPreset,
+  isPreset,
+  listProfiles,
+  loadFavorites,
+  newProfileId,
+  saveProfile,
+  setFavorite,
+  setFavoriteNote,
+} from '../storage/profiles';
+import { Segmented } from './fields';
 import type { AppState } from './state';
 
 interface Props {
@@ -11,6 +22,8 @@ interface Props {
 export function ProfileManager({ state, update }: Props) {
   const [profiles, setProfiles] = useState(listProfiles);
   const [status, setStatus] = useState<string | null>(null);
+  const [favorites, setFavorites] = useState(loadFavorites);
+  const [onlyFavorites, setOnlyFavorites] = useState(() => Object.keys(loadFavorites()).length > 0);
   const current = state.profile;
   const refresh = () => setProfiles(listProfiles());
   const report = (ok: boolean, msg: string) =>
@@ -32,11 +45,15 @@ export function ProfileManager({ state, update }: Props) {
     const preset = isPreset(p.id);
     if (!window.confirm(preset ? `Reset “${p.name}” to factory values?` : `Delete “${p.name}”?`)) return;
     deleteProfile(p.id);
+    if (!preset) setFavorites(setFavorite(p.id, false));
     const list = listProfiles();
     setProfiles(list);
     if (p.id === current.id) update({ profile: list.find((x) => x.id === p.id) ?? list[0] });
     setStatus(preset ? `Reset “${p.name}”.` : `Deleted “${p.name}”.`);
   };
+
+  const visible = onlyFavorites ? profiles.filter((p) => favorites[p.id]) : profiles;
+  const groups = [...visible.reduce((m, p) => m.set(p.cartridge, [...(m.get(p.cartridge) ?? []), p]), new Map<string, LoadProfile[]>())];
 
   return (
     <div className="stack">
@@ -66,26 +83,69 @@ export function ProfileManager({ state, update }: Props) {
         <p className="hint">Saves load, sight height and zero. Conditions are kept separately as your last-used values.</p>
       </div>
 
-      <ul className="profiles">
-        {profiles.map((p) => (
-          <li key={p.id} className={p.id === current.id ? 'active' : ''}>
-            <button type="button" className="profile-pick" onClick={() => update({ profile: p })}>
-              <strong>{p.name}</strong>
-              <span>{p.bullet}</span>
-              <span className="muted">
-                {p.muzzleVelocity} fps · {p.dragModel} {p.bc}
-                {p.bcFromBox ? ' ● BC from box' : ''} · {p.sightHeight}″ SH · {p.zeroRange} yd zero
-                {isPreset(p.id) ? (isEditedPreset(p.id) ? ' · preset (edited)' : ' · preset') : ''}
-              </span>
-            </button>
-            {(!isPreset(p.id) || isEditedPreset(p.id)) && (
-              <button type="button" className="link" onClick={() => remove(p)}>
-                {isPreset(p.id) ? 'Reset' : 'Delete'}
-              </button>
-            )}
-          </li>
-        ))}
-      </ul>
+      <div className="row-wrap">
+        <Segmented
+          value={onlyFavorites ? 'fav' : 'all'}
+          options={[
+            { value: 'all', label: `All (${profiles.length})` },
+            { value: 'fav', label: `★ Favorites (${profiles.filter((p) => favorites[p.id]).length})` },
+          ]}
+          onChange={(v) => setOnlyFavorites(v === 'fav')}
+        />
+      </div>
+
+      {groups.length === 0 && (
+        <p className="hint">No favorites yet. Tap ☆ next to a load in “All” to add it.</p>
+      )}
+      {groups.map(([cartridge, list]) => (
+        <section key={cartridge} className="stack profile-group">
+          <h3 className="group-title">{cartridge}</h3>
+          <ul className="profiles">
+            {list.map((p) => {
+              const fav = favorites[p.id];
+              return (
+                <li key={p.id} className={p.id === current.id ? 'active' : ''}>
+                  <div className="profile-row">
+                    <button
+                      type="button"
+                      className={`star${fav ? ' on' : ''}`}
+                      aria-pressed={!!fav}
+                      aria-label={fav ? `Remove ${p.name} from favorites` : `Add ${p.name} to favorites`}
+                      onClick={() => setFavorites(setFavorite(p.id, !fav))}
+                    >
+                      {fav ? '★' : '☆'}
+                    </button>
+                    <button type="button" className="profile-pick" onClick={() => update({ profile: p })}>
+                      <strong>{p.name}</strong>
+                      <span>{p.bullet}</span>
+                      <span className="muted">
+                        {p.muzzleVelocity} fps · {p.dragModel} {p.bc}
+                        {p.bcFromBox ? ' ● BC from box' : ''} · {p.sightHeight}″ SH · {p.zeroRange} yd zero
+                        {isPreset(p.id) ? (isEditedPreset(p.id) ? ' · preset (edited)' : ' · preset') : ''}
+                      </span>
+                    </button>
+                    {(!isPreset(p.id) || isEditedPreset(p.id)) && (
+                      <button type="button" className="link" onClick={() => remove(p)}>
+                        {isPreset(p.id) ? 'Reset' : 'Delete'}
+                      </button>
+                    )}
+                  </div>
+                  {fav && (
+                    <label className="fav-note">
+                      <span className="sr-only">Note for {p.name}</span>
+                      <input
+                        value={fav.note}
+                        placeholder="Note: use / buy / where / price…"
+                        onChange={(e) => setFavorites(setFavoriteNote(p.id, e.target.value))}
+                      />
+                    </label>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ))}
     </div>
   );
 }

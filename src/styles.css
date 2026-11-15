@@ -132,7 +132,7 @@ legend { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-sp
 .segmented button.on { background: var(--accent-bg); font-weight: 700; box-shadow: inset 0 0 0 1px var(--accent); }
 
 button { cursor: pointer; }
-button:not(.link):not(.th-btn):not(.inputs-toggle):not(.profile-pick):not(.segmented button):not(.tabs button) {
+button:not(.link):not(.th-btn):not(.inputs-toggle):not(.profile-pick):not(.star):not(.segmented button):not(.tabs button) {
   min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2); font-weight: 600;
 }
 button.primary { background: var(--accent-bg) !important; border-color: var(--accent) !important; }
@@ -211,7 +211,21 @@ table.data { border-collapse: collapse; width: 100%; font-variant-numeric: tabul
 
 /* Profiles */
 .profiles { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-.profiles li { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 4px 12px 4px 4px; }
+.profiles li { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 4px 12px 4px 4px; }
+.profile-row { display: flex; align-items: center; gap: 4px; }
+.group-title { margin: 4px 0 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.profile-group { gap: 6px; }
+.star {
+  flex: none; width: 44px; height: 44px; border: 0; background: none; font-size: 24px; line-height: 1;
+  color: var(--muted); padding: 0;
+}
+.star.on { color: var(--accent); }
+.fav-note { display: block; padding: 0 0 8px 48px; }
+.fav-note input {
+  width: 100%; min-height: 36px; padding: 0 8px; font-size: 15px;
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px;
+}
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .profiles li.active { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
 .profile-pick { flex: 1; display: grid; gap: 2px; text-align: left; background: none; border: 0; padding: 8px; min-width: 0; }
 .profile-pick span { font-size: 13px; overflow-wrap: anywhere; }

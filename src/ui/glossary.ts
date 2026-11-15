@@ -290,6 +290,12 @@ export const GLOSSARY: GlossarySection[] = [
           'A saved rifle and load: velocity, BC, weight, sight height and zero. Presets are built in; edits can be saved over them and reset later. Profiles are stored on this device only.',
       },
       {
+        term: 'Favorites',
+        aka: '★',
+        definition:
+          'Tap ☆ next to a load in Profiles to star it, then add a note such as what to buy, where, or which rifle it’s for. The ★ Favorites filter shows only starred loads. Stored on this device only.',
+      },
+      {
         term: 'PWA / Add to Home Screen',
         definition:
           'The app can be installed from your phone’s browser menu. After the first visit it works offline, with no signal needed at the range.',

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { LoadProfile } from '../data/presets';
 import type { Environment } from '../solver';
+import { loadFavorites } from '../storage/profiles';
 import { NumberField, Segmented } from './fields';
 import type { AppState } from './state';
 
@@ -20,6 +21,7 @@ export function InputsPanel({ state, update }: Props) {
     <section className="card inputs">
       <button type="button" className="inputs-toggle" aria-expanded={open} onClick={() => setOpen(!open)}>
         <span>
+          {loadFavorites()[p.id] && <span className="field-marker" aria-label="Favorite">★ </span>}
           <strong>{p.name}</strong>
           <span className="muted">
             {' '}

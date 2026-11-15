@@ -69,3 +69,27 @@ export function loadState<T>(fallback: T): T {
 export function saveState(state: unknown): void {
   write(STATE_KEY, state);
 }
+
+// Favorites: profile id → note (e.g. "buy at Cabela's", "2026 elk load").
+const FAVORITES_KEY = 'ballistics.favorites.v1';
+
+export type Favorites = Record<string, { note: string }>;
+
+export function loadFavorites(): Favorites {
+  return read<Favorites>(FAVORITES_KEY, {});
+}
+
+export function setFavorite(id: string, on: boolean): Favorites {
+  const all = loadFavorites();
+  if (on) all[id] = all[id] ?? { note: '' };
+  else delete all[id];
+  write(FAVORITES_KEY, all);
+  return all;
+}
+
+export function setFavoriteNote(id: string, note: string): Favorites {
+  const all = loadFavorites();
+  all[id] = { note };
+  write(FAVORITES_KEY, all);
+  return all;
+}
