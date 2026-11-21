@@ -21,6 +21,7 @@ const TYPICAL_BARREL_IN: Record<string, number> = {
   [cartridgeKey('.223 Remington')]: 16,
   [cartridgeKey('7mm Rem Mag')]: 24,
   [cartridgeKey('270 Win')]: 22,
+  [cartridgeKey('25-06 Rem')]: 24,
   [cartridgeKey('300 Blackout')]: 16,
   [cartridgeKey('8.6 Blackout')]: 16,
 };
